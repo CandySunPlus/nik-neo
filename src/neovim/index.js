@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import logger from '../log'
 import reducers from './reducers'
 import Process from './process'
+import Screen from './components/screen'
 
 const logMiddleware = store => next => action => {
   logger.debug('dispatch action: ', action.type);
@@ -28,7 +29,10 @@ const unsubscribe = store.subscribe(() => {
 export default class Neovim extends Component {
   constructor(props) {
     super(props);
-    new Process('nvim', []).attach(50, 140).then(nvim => {
+
+    let argv = props.argv && [];
+
+    new Process('nvim', argv).attach(50, 140).then(nvim => {
       this.nvim = nvim
     });
   }
@@ -38,9 +42,10 @@ export default class Neovim extends Component {
   }
 
   render() {
+    let { width, height } = this.props;
     return (
       <Provider store={store}>
-      <div>Hello Neovim</div>
+      <Screen width={width} height={height} />
       </Provider>
     );
   }
