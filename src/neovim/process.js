@@ -71,7 +71,6 @@ export default class Process {
   _onNotified(method, args) {
     logger.info('notify ' + method);
     if (method === 'redraw') {
-
     } else {
       logger.debug('unknown method ' + method);
     }

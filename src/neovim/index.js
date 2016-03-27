@@ -33,7 +33,8 @@ export default class Neovim extends Component {
     let argv = props.argv && [];
 
     new Process('nvim', argv).attach(50, 140).then(nvim => {
-      this.nvim = nvim
+      this.nvim = nvim;
+      console.log(nvim);
     });
   }
 
