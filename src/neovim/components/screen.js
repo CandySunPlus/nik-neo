@@ -7,34 +7,24 @@ export default class Screen extends Component {
   }
 
   componentDidMount() {
+    let { width, height } = this.props;
+    
     this.ctx = this.refs.canvas.getContext('2d');
-    let {width, height} = this.props;
-    this.resizeWithPixel(width, height);
+    this.refs.canvas.style.width = `${width}px`;
+    this.refs.canvas.style.height = `${height}px`;
+    
+    this.refs.canvas.width = width * this.pixelRatio;
+    this.refs.canvas.height = height * this.pixelRatio;
+    this.ctx.scale(this.pixelRatio, this.pixelRatio);
   }
-
-  resizeWithPixel(width, height) {
-    this._resize(0, 0, width, height);
-  }
-
-  resize(rows, cols) {
-
-  }
-
-  _resize(rows, lines, width, height) {
-    if (this.refs.canvas.width != width) {
-      this.refs.canvas.width = width;
-      this.refs.canvas.style.width = (width / this.pixelRatio) + 'px';
-    }
-
-    if (this.refs.canvas.height != height) {
-      this.refs.canvas.height = height;
-      this.refs.canvas.style.height = (height / this.pixelRatio) + 'px';
-    }
+  
+  getCanvasCtx() {
+    return this.ctx;
   }
 
   render() {
     return (
-      <canvas ref="canvas"></canvas>
+      <canvas ref="canvas" />
     );
   }
 }

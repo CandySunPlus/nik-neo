@@ -27,7 +27,8 @@ module.exports = {
     })
   ],
   externals: [
-    'child_process'
+    'child_process',
+    'msgpack5rpc'
   ],
   module: {
     loaders: [{

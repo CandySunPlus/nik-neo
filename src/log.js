@@ -23,27 +23,31 @@ class Log {
     this._level = level;
   }
 
-  info(content) {
+  info(...args) {
     if ([LogLevel.INFO, LogLevel.DEBUG].includes(this._level)) {
-      console.info(`[I][${moment().format('YYYY-MM-DD hh:mm:ss')}] ${content}`);
+      args.unshift(`[I][${moment().format('YYYY-MM-DD hh:mm:ss')}]`);
+      console.log.apply(this, args);
     }
   }
 
-  debug(content) {
+  debug(...args) {
     if ([LogLevel.INFO, LogLevel.WARING, LogLevel.ERROR, LogLevel.DEBUG].includes(this._level)) {
-      console.debug(`[D][${moment().format('YYYY-MM-DD hh:mm:ss')}] ${content}`)
+      args.unshift(`[D][${moment().format('YYYY-MM-DD hh:mm:ss')}]`);
+      console.log.apply(this, args);
     }
   }
 
-  warn(content) {
+  warn(...args) {
     if ([LogLevel.WARING, LogLevel.DEBUG].includes(this._level)) {
-      console.warn(`[W][${moment().format('YYYY-MM-DD hh:mm:ss')}] ${content}`)
+      args.unshift(`[W][${moment().format('YYYY-MM-DD hh:mm:ss')}]`);
+      console.log.apply(this, args);
     }
   }
 
-  error(content) {
+  error(...args) {
     if ([LogLevel.ERROR, LogLevel.DEBUG].includes(this._level)) {
-      console.error(`[E][${moment().format('YYYY-MM-DD hh:mm:ss')}] ${content}`)
+      args.unshift(`[E][${moment().format('YYYY-MM-DD hh:mm:ss')}]`);
+      console.log.apply(this, args);
     }
   }
 }

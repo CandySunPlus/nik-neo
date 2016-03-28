@@ -12,7 +12,7 @@ export default class Process {
     this.started = false;
   }
 
-  attach(rows, cols) {
+  attach(rows, cols, onRedraw, onRequest) {
     // attach to nvim process
     let promise = new Promise((resolve, reject) => {
 
@@ -37,14 +37,14 @@ export default class Process {
         this._client = nvim;
 
         // bind nvim client event listener
-        this._client.on('request', this._onRequested);
-        this._client.on('notification', this._onNotified);
+        this._client.on('request', this._onRequested(onRequest));
+        this._client.on('notification', this._onNotified(onRedraw));
         this._client.on('disconnect', this._onDisconnected);
         // attach nvim client
         this._client.uiAttach(cols, rows, true);
         this.started = true;
         logger.info(`nvim attached: ${this._process.pid} ${rows}x${cols} ${JSON.stringify(this._argv)}.`);
-
+        
         this._client.command('doautocmd <nomodeline> GUIEnter');
 
         resolve(nvim);
@@ -64,15 +64,23 @@ export default class Process {
     this.started = false;
   }
 
-  _onRequested(method, args, response) {
-    logger.info('req ' + method);
+  _onRequested(onRequest) {
+    return (method, args, response) => {
+      logger.info('req ' + method);
+      if (onRequest) {
+        onRequest(method, args, response);
+      }
+    };
   }
 
-  _onNotified(method, args) {
-    logger.info('notify ' + method);
-    if (method === 'redraw') {
-    } else {
-      logger.debug('unknown method ' + method);
+  _onNotified(onRedraw) {
+    return (method, args) => {
+      logger.info('notify ' + method);
+      if (method === 'redraw') {
+        onRedraw(args);
+      } else {
+        logger.debug('unknown method ' + method);
+      }
     }
   }
 
