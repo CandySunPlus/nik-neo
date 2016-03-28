@@ -9,17 +9,18 @@ export default class Screen extends Component {
   componentDidMount() {
     let { width, height } = this.props;
     
-    this.ctx = this.refs.canvas.getContext('2d');
+    const ctx = this.refs.canvas.getContext('2d');
     this.refs.canvas.style.width = `${width}px`;
     this.refs.canvas.style.height = `${height}px`;
     
     this.refs.canvas.width = width * this.pixelRatio;
     this.refs.canvas.height = height * this.pixelRatio;
-    this.ctx.scale(this.pixelRatio, this.pixelRatio);
+    
+    ctx.scale(this.pixelRatio, this.pixelRatio);
   }
   
-  getCanvasCtx() {
-    return this.ctx;
+  getCanvas() {
+    return this.refs.canvas;
   }
 
   render() {

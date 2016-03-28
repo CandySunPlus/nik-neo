@@ -1,9 +1,9 @@
 import logger from '../log'
 import * as utils from './utils' 
 
-export function makeUIReducer(ctx) {
-  const ui = new UI(ctx);
-  return (state=ctx, action) => {
+export function makeUIReducer(canvas) {
+  const ui = new UI(canvas);
+  return (state=canvas, action) => {
     switch (action.type) {
       case 'nv_update_fg':
         return state;
@@ -27,8 +27,9 @@ export function makeNeovimReducer(nvim) {
 }
 
 class UI {
-  constructor(ctx) {
-    this._ctx = ctx;
+  constructor(canvas) {
+    this._ctx = canvas.getContext('2d');
+    this._canvas = canvas;
     this._bgColor = 'rgb(0, 0, 0)';
   }
 
@@ -41,7 +42,7 @@ class UI {
   
   clear() {
     this._ctx.fillStyle = this._bgColor;
-    logger.debug(this._ctx);
+    logger.debug(this._canvas);
     this._ctx.fillRect(0, 0, this._ctx.width, this._ctx.height);
     return this._ctx;
   }

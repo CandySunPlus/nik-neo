@@ -29,7 +29,7 @@ export default class Neovim extends Component {
         this.nvim = nvim;
         this.store = applyMiddleware(Neovim.logMiddleware)(createStore)(combineReducers({
           neovimReducer: makeNeovimReducer(nvim),
-          uiReducer: makeUIReducer(this.refs.screen.getCanvasCtx())
+          uiReducer: makeUIReducer(this.refs.screen.getCanvas())
         }));
       }).catch(err => {
         throw err;
