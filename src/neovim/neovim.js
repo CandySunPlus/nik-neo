@@ -124,7 +124,7 @@ export default class NeoVim {
       return this.state;
     }
     this._ctx.font = this.canvasFontStyle;
-    this._ctx.fillStyle = this._bgColor;
+    this._ctx.fillStyle = this._attrs.get('foreground');
     this._ctx.textBaseline = 'bottom';
     let offsetX = this._cursor.x;
     let offsetY = this._cursor.y;
@@ -139,7 +139,7 @@ export default class NeoVim {
   setHighlight(attrs) {
     this._attrs = this._attrs.withMutations(map => {
       for (let attr of Object.keys(attrs)) {
-        if (attr == 'fg_color' || attr == 'bg_color') {
+        if (attr == 'foreground' || attr == 'background') {
           map.set(attr, utils.getColorString(attrs[attr]));
         } else {
           map.set(attr, attrs[attr]);
