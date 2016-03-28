@@ -22,6 +22,14 @@ class Cursor {
     return (this._row + 1) * this.fontHeight;
   }
 
+  get col() {
+    return this._col;
+  }
+
+  get row() {
+    return this._row;
+  }
+
   set col(col) {
     this._col = col;
     this._el.style.left = (col * this._el.clientWidth) + 'px';
@@ -119,15 +127,41 @@ export default class NeoVim {
     return Math.floor(this._canvas.height / this._cursor.fontHeight);
   }
 
+  get bgColor() {
+    let _fgColor = this._attrs.get('foreground') || this._fgColor;
+    let _bgColor = this._attrs.get('background') || this._bgColor;
+    return this._attrs.get('reverse') ? _fgColor : _bgColor;
+  }
+
+  get fgColor() {
+    let _fgColor = this._attrs.get('foreground') || this._fgColor;
+    let _bgColor = this._attrs.get('background') || this._bgColor;
+    return this._attrs.get('reverse') ? _bgColor : _fgColor;
+  }
+
+  _clearBlock(col, row, length) {
+    this._ctx.fillStyle = this.bgColor;
+    this._ctx.fillRect(
+      col * this._cursor.fontWidth,
+      row * this._cursor.fontHeight,
+      length * this._cursor.fontWidth,
+      this._cursor.fontHeight
+    );
+  }
+
   putChars(chars) {
     if (chars.length == 0) {
       return this.state;
     }
+
+    this._clearBlock(this._cursor.col, this._cursor.row, chars.length);
+
     this._ctx.font = this.canvasFontStyle;
-    this._ctx.fillStyle = this._attrs.get('foreground');
+    this._ctx.fillStyle = this.fgColor;
     this._ctx.textBaseline = 'bottom';
     let offsetX = this._cursor.x;
     let offsetY = this._cursor.y;
+
     for (let char of chars) {
       logger.info(char, offsetX, offsetY);
       this._ctx.fillText(char, offsetX, offsetY);
@@ -156,6 +190,16 @@ export default class NeoVim {
     return this;
   }
 
+  updateFg(rgb) {
+    logger.info(rgb);
+    if (rgb != -1) {
+      logger.info(rgb);
+      this._fgColor = utils.getColorString(rgb);
+      logger.info(this._fgColor);
+    }
+    return this;
+  }
+
   updateBg(rgb) {
     if (rgb != -1) {
       this._bgColor = utils.getColorString(rgb);
@@ -164,7 +208,7 @@ export default class NeoVim {
   }
 
   clear() {
-    this._ctx.fillStyle = this._bgColor;
+    this._ctx.fillStyle = this.bgColor;
     this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
     return this;
   }

@@ -13,10 +13,10 @@ export default function makeReducer() {
 function makeNeovimMsgReducer(neovim) {
   return (state=neovim, action) => {
     switch (action.type) {
-      case 'nv_update_fg':
-        return state;
       case 'nv_update_bg':
         return neovim.updateBg.apply(neovim, action.args);
+      case 'nv_update_fg':
+        return neovim.updateFg.apply(neovim, action.args);
       case 'nv_clear':
         return neovim.clear.apply(neovim, action.args);
       case 'nv_highlight_set':
