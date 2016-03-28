@@ -1,49 +1,43 @@
 import logger from '../log'
-import * as utils from './utils' 
+import NeoVim  from './neovim'
+import { UIActions } from './actions'
 
-export function makeUIReducer(canvas) {
-  const ui = new UI(canvas);
-  return (state=canvas, action) => {
+export default function makeReducer() {
+  const neovim = new NeoVim();
+  return {
+    uiReducer: makeUIReducer(neovim),
+    neovimMsgReducer: makeNeovimMsgReducer(neovim)
+  };
+}
+
+function makeNeovimMsgReducer(neovim) {
+  return (state=neovim, action) => {
     switch (action.type) {
       case 'nv_update_fg':
         return state;
       case 'nv_update_bg':
-        return ui.updateBg.apply(ui, action.args);
+        return neovim.updateBg.apply(neovim, action.args);
       case 'nv_clear':
-        return ui.clear.apply(ui, action.args);
+        return neovim.clear.apply(neovim, action.args);
+      case 'nv_highlight_set':
+        return neovim.setHighlight.apply(neovim, action.args);
+      case 'nv_cursor_goto':
+        return neovim.setCursorPosition.apply(neovim, action.args);
+      case 'nv_put':
+        return neovim.putChars.apply(neovim, action.args);
       default:
         return state;
     }
   }
 }
 
-export function makeNeovimReducer(nvim) {
-  return (state=nvim, action) => {
-    switch (action) {
+function makeUIReducer(neovim) {
+  return (state=neovim, action) => {
+    switch (action.type) {
+      case UIActions.ATTACH_SCREEN:
+        return neovim.attachScreen.apply(neovim, action.args);
       default:
         return state;
     }
-  }
-}
-
-class UI {
-  constructor(canvas) {
-    this._ctx = canvas.getContext('2d');
-    this._canvas = canvas;
-    this._bgColor = 'rgb(0, 0, 0)';
-  }
-
-  updateBg(rgb) {
-    if (rgb != -1) {
-      this._bgColor = utils.getColorString(rgb);
-    }
-    return this._ctx;
-  }
-  
-  clear() {
-    this._ctx.fillStyle = this._bgColor;
-    logger.debug(this._canvas);
-    this._ctx.fillRect(0, 0, this._ctx.width, this._ctx.height);
-    return this._ctx;
   }
 }

@@ -44,7 +44,7 @@ export default class Process {
         this._client.uiAttach(cols, rows, true);
         this.started = true;
         logger.info(`nvim attached: ${this._process.pid} ${rows}x${cols} ${JSON.stringify(this._argv)}.`);
-        
+
         this._client.command('doautocmd <nomodeline> GUIEnter');
 
         resolve(nvim);
@@ -75,7 +75,6 @@ export default class Process {
 
   _onNotified(onRedraw) {
     return (method, args) => {
-      logger.info('notify ' + method);
       if (method === 'redraw') {
         onRedraw(args);
       } else {

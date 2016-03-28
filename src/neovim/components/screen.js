@@ -1,31 +1,25 @@
 import React, { Component } from 'react'
+import * as Actions from '../actions'
 
 
 export default class Screen extends Component {
-  componentWillMount() {
-    this.pixelRatio = window.devicePixelRatio || 1;
-  }
-
   componentDidMount() {
-    let { width, height } = this.props;
-    
-    const ctx = this.refs.canvas.getContext('2d');
-    this.refs.canvas.style.width = `${width}px`;
-    this.refs.canvas.style.height = `${height}px`;
-    
-    this.refs.canvas.width = width * this.pixelRatio;
-    this.refs.canvas.height = height * this.pixelRatio;
-    
-    ctx.scale(this.pixelRatio, this.pixelRatio);
-  }
-  
-  getCanvas() {
-    return this.refs.canvas;
+    let { width, height, store, argv, onRedraw } = this.props;
+    store.dispatch(Actions.attachScreen(
+      this.refs.screen,
+      width,
+      height,
+      argv,
+      onRedraw
+    ));
   }
 
   render() {
     return (
-      <canvas ref="canvas" />
+      <div className="screen" ref="screen">
+        <canvas />
+        <span className="cursor"></span>
+      </div>
     );
   }
 }
