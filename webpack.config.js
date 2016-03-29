@@ -2,7 +2,7 @@
 let path = require('path');
 let webpack = require('webpack');
 let autoprefixer = require('autoprefixer');
-let cssnext = require('cssnext')
+let precss = require('precss')
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
@@ -49,6 +49,6 @@ module.exports = {
     }]
   },
   postcss: () => {
-    return [autoprefixer, cssnext()];
+    return [autoprefixer, precss];
   }
 };
