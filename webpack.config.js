@@ -1,6 +1,8 @@
 'use strict';
 let path = require('path');
 let webpack = require('webpack');
+let autoprefixer = require('autoprefixer');
+let cssnext = require('cssnext')
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
@@ -33,9 +35,20 @@ module.exports = {
   module: {
     loaders: [{
       test: /\.js$/,
-      loaders: ['react-hot', 'babel?presets[]=react,presets[]=es2015,presets[]=stage-0,plugins[]=transform-decorators-legacy'],
+      loaders: [
+        'react-hot',
+        'babel?presets[]=react,presets[]=es2015,presets[]=stage-0,plugins[]=transform-decorators-legacy'
+      ],
+      exclude: /(node_modules|bower_components)/,
+      include: path.join(__dirname, 'src')
+    }, {
+      test: /\.css$/,
+      loader: 'style-loader!css-loader!postcss-loader',
       exclude: /(node_modules|bower_components)/,
       include: path.join(__dirname, 'src')
     }]
+  },
+  postcss: () => {
+    return [autoprefixer, cssnext()];
   }
 };

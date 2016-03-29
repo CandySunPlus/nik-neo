@@ -4,12 +4,12 @@ body {
 }
 .screen {
     position: relative;
-}
-.cursor {
-    position: absolute;
-    display: block;
-    background-color: red;
-}
-.cursor:after {
-    content: '\00a0';
+    .cursor {
+        position: absolute;
+        display: block;
+        background-color: red;
+        &:after {
+            content: '\00a0';
+        }
+    }
 }
