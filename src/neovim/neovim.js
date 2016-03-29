@@ -15,11 +15,11 @@ class Cursor {
   }
 
   get x() {
-    return this.fontWidth * this._col;
+    return this._col * this.fontWidth;
   }
 
   get y() {
-    return (this._row + 1) * this.fontHeight;
+    return this._row * this.fontHeight;
   }
 
   get col() {
@@ -32,22 +32,29 @@ class Cursor {
 
   set col(col) {
     this._col = col;
-    this._el.style.left = (col * this._el.clientWidth) + 'px';
+    this._el.style.left = (col * this.fontWidth) + 'px';
   }
 
   set row(row) {
     this._row = row;
-    this._el.style.top = (row * this._el.clientHeight) + 'px';
+    this._el.style.top = (row * this.fontHeight) + 'px';
   }
 
   get fontWidth() {
-    return this._el.clientWidth * this._pixelRatio;
+    return this._el.clientWidth;
   }
 
   get fontHeight() {
-    return this._el.clientHeight * this._pixelRatio;
+    return this._el.clientHeight;
   }
 
+  get fontDrawWidth() {
+    return this.fontWidth * this._pixelRatio;
+  }
+
+  get fontDrawHeight() {
+    return this.fontHeight * this._pixelRatio;
+  }
 }
 
 export default class NeoVim {
@@ -62,7 +69,7 @@ export default class NeoVim {
     this._bgColor = 'rgb(255, 255, 255)';
     this._attrs = Immutable.Map();
     this._font = Immutable.Map({
-      font_family: 'Letter Gothic for Powerline',
+      font_family: 'Fira Code',
       font_size: '12'
     });
   }
@@ -86,11 +93,11 @@ export default class NeoVim {
   }
 
   get rows() {
-    return Math.floor(this._canvas.width / this._cursor.fontWidth);
+    return Math.floor(this._canvas.width / this._cursor.fontDrawWidth);
   }
 
   get cols() {
-    return Math.floor(this._canvas.height / this._cursor.fontHeight);
+    return Math.floor(this._canvas.height / this._cursor.fontDrawHeight);
   }
 
   get bgColor() {
@@ -152,10 +159,10 @@ export default class NeoVim {
   _clearBlock(col, row, length) {
     this._ctx.fillStyle = this.bgColor;
     this._ctx.fillRect(
-      col * this._cursor.fontWidth,
-      row * this._cursor.fontHeight,
-      length * this._cursor.fontWidth,
-      this._cursor.fontHeight
+      col * this._cursor.fontDrawWidth,
+      row * this._cursor.fontDrawHeight,
+      length * this._cursor.fontDrawWidth,
+      this._cursor.fontDrawHeight
     );
   }
 
@@ -168,14 +175,14 @@ export default class NeoVim {
 
     this._ctx.font = this.canvasFontStyle;
     this._ctx.fillStyle = this.fgColor;
-    this._ctx.textBaseline = 'bottom';
+    this._ctx.textBaseline = 'top';
     let offsetX = this._cursor.x;
     let offsetY = this._cursor.y;
 
     for (let char of chars) {
       logger.info(char, offsetX, offsetY);
       this._ctx.fillText(char, offsetX, offsetY);
-      offsetX += this._cursor.fontWidth;
+      offsetX += this._cursor.fontDrawWidth;
     }
     return this;
   }
