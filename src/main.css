@@ -1,0 +1,15 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+.screen {
+    position: relative;
+}
+.cursor {
+    position: absolute;
+    display: block;
+    background-color: red;
+}
+.cursor:after {
+    content: '\00a0';
+}

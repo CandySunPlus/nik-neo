@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
-import * as Actions from '../actions'
+import * as NeovimEvents from '../events'
+import logger from '../../log'
 
 
 export default class Screen extends Component {
   componentDidMount() {
-    let { width, height, store, argv, onRedraw } = this.props;
-    store.dispatch(Actions.attachScreen(
+    logger.info(this.props);
+    let { width, height, eventEmitter, argv} = this.props;
+    eventEmitter.emit('ui', NeovimEvents.attachScreen(
       this.refs.screen,
       width,
       height,
-      argv,
-      onRedraw
+      argv
     ));
   }
 

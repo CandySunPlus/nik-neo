@@ -51,7 +51,8 @@ class Cursor {
 }
 
 export default class NeoVim {
-  constructor() {
+  constructor(eventEmitter) {
+    this._eventEmitter = eventEmitter;
     this._pixelRatio = window.devicePixelRatio || 1;
     this._nvim = null;
     this._ctx = null;
@@ -84,6 +85,36 @@ export default class NeoVim {
     return font;
   }
 
+  get rows() {
+    return Math.floor(this._canvas.width / this._cursor.fontWidth);
+  }
+
+  get cols() {
+    return Math.floor(this._canvas.height / this._cursor.fontHeight);
+  }
+
+  get bgColor() {
+    let _fgColor = this._attrs.get('foreground') || this._fgColor;
+    let _bgColor = this._attrs.get('background') || this._bgColor;
+    return this._attrs.get('reverse') ? _fgColor : _bgColor;
+  }
+
+  get fgColor() {
+    let _fgColor = this._attrs.get('foreground') || this._fgColor;
+    let _bgColor = this._attrs.get('background') || this._bgColor;
+    return this._attrs.get('reverse') ? _bgColor : _fgColor;
+  }
+
+  _onRedraw(events) {
+    for (let event of events) {
+      let [type, ...args] = event;
+      this._eventEmitter.emit('redraw', {
+        type: `nv_${type}`,
+        args: args
+      });
+    }
+  }
+
   attachScreen(screen, width, height, argv, onRedraw) {
     this._initScreen(screen.firstChild, width, height);
     this._initCursor(screen.lastChild);
@@ -110,33 +141,12 @@ export default class NeoVim {
 
   _attach(argv, onRedraw) {
     let process = new Process('nvim', argv)
-    .attach(this.rows, this.cols, onRedraw)
+    .attach(this.rows, this.cols, (events) => this._onRedraw(events))
     .then(nvim => {
       this._nvim = nvim;
     }).catch(err => {
       throw err;
     });
-  }
-
-
-  get rows() {
-    return Math.floor(this._canvas.width / this._cursor.fontWidth);
-  }
-
-  get cols() {
-    return Math.floor(this._canvas.height / this._cursor.fontHeight);
-  }
-
-  get bgColor() {
-    let _fgColor = this._attrs.get('foreground') || this._fgColor;
-    let _bgColor = this._attrs.get('background') || this._bgColor;
-    return this._attrs.get('reverse') ? _fgColor : _bgColor;
-  }
-
-  get fgColor() {
-    let _fgColor = this._attrs.get('foreground') || this._fgColor;
-    let _bgColor = this._attrs.get('background') || this._bgColor;
-    return this._attrs.get('reverse') ? _bgColor : _fgColor;
   }
 
   _clearBlock(col, row, length) {
