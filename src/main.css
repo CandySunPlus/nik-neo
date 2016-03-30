@@ -6,6 +6,7 @@ body {
 .screen {
     position: relative;
     .cursor {
+        line-height: 1.2 !important;
         position: absolute;
         display: block;
         background-color: red;

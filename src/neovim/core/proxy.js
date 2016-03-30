@@ -1,9 +1,10 @@
 import EventEmitter from 'events';
-import logger from '../log'
+import * as utils from '../../utils'
 import NeoVim  from './neovim'
 import { UIEventType } from './events'
 
-export default class NeovimEventEmitter extends EventEmitter {
+export default class NeovimEventProxy extends EventEmitter {
+
   constructor() {
     super();
     this._neovim = new NeoVim(this);
@@ -16,15 +17,16 @@ export default class NeovimEventEmitter extends EventEmitter {
   }
 
   _neovimMsgHandler(evt) {
+    utils.logger.debug(evt.type, JSON.stringify(evt.args));
     switch (evt.type) {
       case 'nv_update_bg':
-        this._neovim.updateBg.apply(this._neovim, evt.args);
+        this._neovim.updateBackground.apply(this._neovim, evt.args);
         break;
       case 'nv_update_fg':
-        this._neovim.updateFg.apply(this._neovim, evt.args);
+        this._neovim.updateForeground.apply(this._neovim, evt.args);
         break;
       case 'nv_clear':
-        this._neovim.clear.apply(this._neovim, evt.args);
+        this._neovim.clearAll.apply(this._neovim, evt.args);
         break;
       case 'nv_highlight_set':
         this._neovim.setHighlight.apply(this._neovim, evt.args);
@@ -33,13 +35,13 @@ export default class NeovimEventEmitter extends EventEmitter {
         this._neovim.setCursorPosition.apply(this._neovim, evt.args);
         break;
       case 'nv_put':
-        this._neovim.putChars.apply(this._neovim, evt.args);
+        this._neovim.drawText.apply(this._neovim, evt.args);
         break;
       case 'nv_resize':
         this._neovim.resize.apply(this._neovim, evt.args);
         break;
       default:
-        logger.error(`can't find neovim message event handler for event: ${evt.type}`);
+        utils.logger.error(`can't find neovim message event handler for event: ${evt.type}`);
         break;
     }
   }
@@ -50,7 +52,7 @@ export default class NeovimEventEmitter extends EventEmitter {
         this._neovim.attachScreen.apply(this._neovim, evt.args);
         break;
       default:
-        logger.error(`can't find UI event handler for event: ${evt.type}`);
+        utils.logger.error(`can't find UI event handler for event: ${evt.type}`);
         break;
     }
   }

@@ -1,7 +1,7 @@
 import * as cp from 'child_process'
 import Immutable from 'immutable'
 import attach from 'neovim-client'
-import logger from '../log'
+import * as utils from '../../utils'
 
 export default class Process {
   constructor(command='', argv=[]) {
@@ -43,7 +43,7 @@ export default class Process {
         // attach nvim client
         this._client.uiAttach(cols, rows, true);
         this.started = true;
-        logger.info(`nvim attached: ${this._process.pid} ${rows}x${cols} ${JSON.stringify(this._argv)}.`);
+        utils.logger.info(`nvim attached: ${this._process.pid} ${rows}x${cols} ${JSON.stringify(this._argv)}.`);
 
         this._client.command('doautocmd <nomodeline> GUIEnter');
 
@@ -66,7 +66,7 @@ export default class Process {
 
   _onRequested(onRequest) {
     return (method, args, response) => {
-      logger.info('req ' + method);
+      utils.logger.info('req ' + method);
       if (onRequest) {
         onRequest(method, args, response);
       }
@@ -78,13 +78,13 @@ export default class Process {
       if (method === 'redraw') {
         onRedraw(args);
       } else {
-        logger.debug('unknown method ' + method);
+        utils.logger.debug('unknown method ' + method);
       }
     }
   }
 
   _onDisconnected() {
-    logger.info(`disconnected: ${this._process.pid}`);
+    utils.logger.info(`disconnected: ${this._process.pid}`);
     this.started = false;
   }
 }

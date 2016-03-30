@@ -1,4 +1,4 @@
-import Enum from 'es6-enum'
+import Enum from 'enum'
 import moment from 'moment'
 
 const NODE_ENV = (() => {
@@ -8,7 +8,7 @@ const NODE_ENV = (() => {
   return 'production';
 })();
 
-const LogLevel = Enum('INFO', 'WARING', 'ERROR', 'DEBUG');
+const LogLevel = new Enum(['INFO', 'WARING', 'ERROR', 'DEBUG']);
 
 class Log {
   constructor(node_env) {

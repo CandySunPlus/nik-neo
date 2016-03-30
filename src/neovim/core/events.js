@@ -1,8 +1,6 @@
-import Enum from 'es6-enum'
+import Enum from 'enum'
 
-export const UIEventType = Enum(
-  'ATTACH_SCREEN'
-);
+export const UIEventType = new Enum(['ATTACH_SCREEN']);
 
 export function attachScreen(...args) {
   return {
