@@ -3,17 +3,14 @@ export default class Cursor {
     this._pixelRatio = pixelRatio;
     this._el = cursorEl;
     this._ctx = screenCtx;
-    this._fontAttr = {
-      size: fontSize,
-      family: fontFamily
-    };
     this._position = {
       col: 0,
       row: 0
     }
 
     this._el.style.font = `${fontSize} "${fontFamily}"`;
-    this._el.style.backgroundColor = '#000';
+    this.setPosition(0, 0);
+    
   }
 
   get fontWidth() {
@@ -34,7 +31,7 @@ export default class Cursor {
 
   set row(row) {
     this._position.row = row;
-    this._el.style.top = row* this.fontHeight;
+    this._el.style.top = row * this.fontHeight;
   }
 
   set col(col) {
