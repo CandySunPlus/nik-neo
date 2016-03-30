@@ -10,7 +10,7 @@ export default class Cursor {
 
     this._el.style.font = `${fontSize} "${fontFamily}"`;
     this.setPosition(0, 0);
-    
+
   }
 
   get fontWidth() {
