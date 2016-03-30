@@ -24,7 +24,9 @@ export default class NeoVim {
 
   attachScreen(screenEl, width, height, fontFamily, fontSize, argv) {
     this._initScreen(screenEl, width, height, fontFamily, fontSize).then(({cols, rows}) => {
-      new Process('nvim', argv).attach(cols, rows, (events) => {this._onRedraw(events)}).then(nvim => {
+      new Process('nvim', argv)
+      .attach(cols, rows, (events) => {this._onRedraw(events)})
+      .then(nvim => {
         this._nvim = nvim;
       });
     });

@@ -13,6 +13,7 @@ export default class Cursor {
     }
 
     this._el.style.font = `${fontSize} "${fontFamily}"`;
+    this._el.style.backgroundColor = '#000';
   }
 
   get fontWidth() {
