@@ -12,7 +12,7 @@ export default class Process {
     this.started = false;
   }
 
-  attach(rows, cols, onRedraw, onRequest) {
+  attach(cols, rows, onRedraw, onRequest) {
     // attach to nvim process
     let promise = new Promise((resolve, reject) => {
 

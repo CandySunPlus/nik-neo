@@ -4,7 +4,7 @@ import Neovim from './neovim'
 
 
 ReactDOM.render(
-  <Neovim argv={[]} width={800} height={600} />,
+  <Neovim argv={[]} width={window.innerWidth} height={window.innerHeight} />,
   document.getElementById('Neovim')
 );
 
