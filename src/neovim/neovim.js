@@ -161,6 +161,7 @@ export default class NeoVim {
   }
 
   _clearBlock(col, row, length) {
+    logger.debug(col, row, length, this.bgColor);
     this._ctx.fillStyle = this.bgColor;
     this._ctx.fillRect(
       col * this._cursor.fontWidth,
@@ -184,20 +185,16 @@ export default class NeoVim {
       chars = chars.concat(arg);
     }
 
-    logger.debug(chars.join(''));
 
     this._clearBlock(this._cursor.col, this._cursor.row, chars.length);
+    logger.debug(chars.join(''));
 
     this._ctx.font = this.canvasFontStyle;
     this._ctx.fillStyle = this.fgColor;
     this._ctx.textBaseline = 'top';
 
-    for (let char of chars) {
-      let offsetX = this._cursor.x;
-      let offsetY = this._cursor.y;
-      this._ctx.fillText(char, offsetX, offsetY);
-      this._cursor.col ++;
-    }
+    this._ctx.fillText(chars.join(''), this._cursor.x, this._cursor.y);
+    this._cursor.col += chars.length;
   }
 
   setHighlight(...args) {
