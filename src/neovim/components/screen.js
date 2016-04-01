@@ -20,7 +20,7 @@ export default class Screen extends Component {
     return (
       <div className="screen" ref="screen">
         <canvas />
-        <span className="cursor"></span>
+        <span className="cursor" />
       </div>
     );
   }

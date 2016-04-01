@@ -55,27 +55,31 @@ export default class NeoVim {
   }
 
   updateBackground(intRgb) {
-
+    this._cursor.bgColor = intRgb;
   }
 
   updateForeground(intRgb) {
-
+    this._cursor.fgColor = intRgb;
   }
 
   clearAll() {
-
+    this._ctx.fillStyle = this._cursor.bgColor;
+    this._ctx.fillRect(0, 0, this._ctx.canvas.width, this._ctx.canvas.height);
   }
 
   setHighlight(...args) {
-
+    let highlights = Array.prototype.concat.apply([], args);
+    highlights.unshift({});
+    this._cursor.setCurrentFontAttr(Object.assign.apply({}, highlights));
   }
 
-  setCursorPosition(position) {
-
+  setCursorPosition([row, col]) {
+    this._cursor.setPosition(row, col);
   }
 
   drawText(...args) {
-
+    let text = Array.prototype.concat.apply([], args).join('');
+    this._cursor.putText(text);
   }
 
   resize([cols, rows]) {
