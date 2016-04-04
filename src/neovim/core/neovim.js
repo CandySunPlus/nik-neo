@@ -1,4 +1,3 @@
-import Immutable from 'immutable'
 import Process from './process'
 import * as utils from '../../utils'
 import Cursor from './cursor'
@@ -24,7 +23,9 @@ export default class NeoVim {
 
   attachScreen(screenEl, width, height, fontFamily, fontSize, argv) {
     this._initScreen(screenEl, width, height, fontFamily, fontSize).then(({cols, rows}) => {
-      new Process('nvim', argv)
+      new Process('nvim', argv
+
+      )
       .attach(cols, rows, (events) => {this._onRedraw(events)})
       .then(nvim => {
         this._nvim = nvim;
@@ -78,8 +79,8 @@ export default class NeoVim {
   }
 
   drawText(...args) {
-    let text = Array.prototype.concat.apply([], args).join('');
-    this._cursor.putText(text);
+    let chars = Array.prototype.concat.apply([], args);
+    this._cursor.putChars(chars);
   }
 
   resize([cols, rows]) {

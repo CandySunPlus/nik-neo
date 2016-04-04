@@ -106,7 +106,6 @@ export default class Cursor {
     }
     styles.push(this._currentFontAttr.get('size'));
     styles.push(this._currentFontAttr.get('family'));
-    utils.logger.debug(styles.join(' '));
     return styles.join(' ');
   }
   
@@ -119,7 +118,9 @@ export default class Cursor {
     this._currentFontAttr = this._baseFontAttr.merge(
       Immutable.Map(highlight).map((value, key) => {
         if (['background', 'foreground'].indexOf(key) !== -1) {
-          return utils.color.intRgbToHex(value);
+          let reverseKey = key == 'background' ? 'foreground': 'background';
+          return highlight.reverse ?
+            utils.color.intRgbToHex(highlight[reverseKey]) : utils.color.intRgbToHex(value);
         }
         return value;
       })
@@ -145,17 +146,45 @@ export default class Cursor {
     );
   }
 
-  putText(text) {
+  drawChars(x, y, chars, width) {
+    let includes_half_only = true;
+    for (const c of chars) {
+      if (!c[0]) {
+        includes_half_only = false;
+        break;
+      }
+    }
+    if (includes_half_only) {
+      // Note:
+      // If the text includes only half characters, we can render it at once.
+      const text = chars.map(c => (c[0] || '')).join('');
+      this._ctx.fillText(text, x, y);
+      return;
+    }
+
+    for (const char of chars) {
+      if (!char[0] || char[0] === ' ') {
+        x += width;
+        continue;
+      }
+      this._ctx.fillText(char.join(''), x, y);
+      x += width;
+    }
+
+  }
+
+  putChars(chars) {
+    utils.logger.debug(JSON.stringify(this._currentFontAttr.toJSON()));
     this.clearBlock(
-      this.position.row, this.position.col, 1, text.length
+      this.position.row, this.position.col, 1, chars.length
     );
     
     this._ctx.fillStyle = this._currentFontAttr.get('foreground');
     this._ctx.textBaseline = 'top';
     this._ctx.font = this.drawFontStyle;
-    this._ctx.fillText(text, this.position.x, this.position.y);
+    this._ctx.fillText(chars.join(''), this.position.x, this.position.y);
     
-    this.col += text.length;
+    this.col += chars.length;
   }
 
 }
